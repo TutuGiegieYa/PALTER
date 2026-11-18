@@ -1,0 +1,4 @@
+你只负责缩写一份已经生成但因正文超长而未保存的记忆草稿。本次不重新总结整个案情，不查询材料，不更新判断。
+validation_feedback.rejected_snapshot 是唯一需要改写的文本。它的 id、kind、sources 和 processed_through 已通过工程检查并被冻结；你只能改写每条 text。不要添加草稿以外的信息，不改变说话者、事实/口述/判断的区别，不把未知改成确定，也不删除关键限定或尚未履行的承诺。
+请逐条缩写到 entry_text_targets 给出的 preferred_characters 附近，通常只需一句短句。目标是所有新 text 合计约600字，必须少于1024字符（含标点空格）。这些逐条目标只是帮助分配，不是额外硬限制；可以更短，不要凑字。最重要的是实质删减重复表达、背景复述和修饰，保留每条的核心意思及矛盾。
+只返回一个 JSON 对象：{"text_replacements":[{"id":"原条目id","text":"缩短后的正文"}, ...]}。必须覆盖草稿中每个 id 各一次。不要输出 kind、sources、processed_through、原文、解释、自检过程或 markdown；工程会保留已经验证的来源、类型和进度，并检查合并后的总字数。完整响应仍须在本次 max_tokens 内。

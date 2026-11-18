@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>PALTER · 开始你的故事</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+  <script src="/investigation.js" defer></script>
+  <script src="/ensemble.js" defer></script>
+  <script src="/spectator.js" defer></script>
+</head>
+<body>
+  <header class="masthead">
+    <a class="wordmark" href="/" aria-label="PALTER 首页">PALTER<span>每个人，都只知道故事的一部分。</span></a>
+    <div class="header-controls">
+      <label class="category-label" for="category">故事分类</label><select id="category" aria-label="选择故事分类"><option value="mystery">悬疑推理 · 命案</option><option value="theft">悬疑推理 · 失窃</option><option value="family">关系与秘密</option><option value="council">议事与继任</option><option value="rescue">隔绝与救援</option><option value="house">异象与探索</option><option value="archive">封存档案</option></select>
+      <label for="human-count">参与方式</label><select id="human-count"><option value="1">1 人</option><option value="2">2 人</option><option value="3">3 人</option><option value="4">4 人</option><option value="0">观海 · 全 AI</option></select>
+      <label for="opening-mode">命案开场</label><select id="opening-mode"><option value="after">直接调查</option><option value="interactive">参与到场与意愿</option></select>
+      <button id="join-game" class="button quiet">加入房间</button>
+      <label class="history-label" for="history">游戏记录</label><select id="history" aria-label="选择游戏记录"><option value="">当前记录</option></select>
+      <button id="new-game" class="button quiet" disabled>开始新局 <span aria-hidden="true">↗</span></button>
+    </div>
+  </header>
+  <main id="app"><div class="loading">正在打开档案…</div></main>
+  <div id="notice" class="notice" role="status" aria-live="polite"></div>
+  <div id="recovery" class="recovery" hidden>上一项操作的响应尚未确认。<button id="retry" class="button quiet">恢复上一项操作</button><button id="discard" class="button quiet" hidden>取消未完成的操作</button></div>
+  <footer><span>PALTER · 互动故事</span><span>正在连接游戏运行环境…</span></footer>
+</body>
+</html>

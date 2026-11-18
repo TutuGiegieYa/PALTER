@@ -1,0 +1,47 @@
+# Local credentials and overrides. Keep the placeholder template.
+.env
+.env.*
+!.env.example
+.envrc
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+.ssh/
+
+# Local game state, model call records, and test artifacts.
+.local/
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.db
+*.db-*
+*.log
+*.log.*
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environments and build outputs.
+.conda-env/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+node_modules/
+
+# Workstation and editor settings.
+/.agents/
+/.codex/
+/.idea/
+/.vscode/
+.DS_Store
+*.swp

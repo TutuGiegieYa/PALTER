@@ -1,0 +1,464 @@
+{
+  "introduction": {
+    "tokens": 1800,
+    "instruction": "Generate THREE independent Chinese public story candidates for the selected category in a single JSON candidates array. Each candidate is a complete alternative game, not a chapter or location in a common world. Give the three alternatives substantially different eras, social environments, everyday activities, central disputes and kinds of target objects. Invent these freely; no setting catalogue or shared fictional universe is prescribed. Chinese is the presentation language, not a restriction on culture, region or historical period. Build each premise from a specific human dilemma and choose a setting that makes it interesting. Category sets the intended experience. The runtime will select one candidate at random; give each equal creative attention. Do not select, rank or review candidates yourself. For EACH alternative: exactly three participants including one human-controlled role, three accessible locations, one portable recoverable item, a plausible deadline, and public stakes that make finding and returning that item matter. Respect the supported public mechanics. No gameplay has occurred. Leave choices and outcomes open. Do not disclose hidden custody, a culprit, private motives, future actions or an ending. Write a concise public introduction of 120–180 Chinese characters, then a title and item_name. Use natural Chinese and in-world names; keep IDs, variable placeholders, creativity_seed and implementation annotations out of player-facing prose. Return exactly three objects with introduction, title and item_name. Use valid JSON with ASCII double quotes as delimiters.",
+    "example": {
+      "candidates": [
+        {
+          "introduction": "独立故事的公开情境介绍",
+          "title": "故事标题",
+          "item_name": "需要找回的物品"
+        },
+        {
+          "introduction": "独立故事的公开情境介绍",
+          "title": "故事标题",
+          "item_name": "需要找回的物品"
+        },
+        {
+          "introduction": "独立故事的公开情境介绍",
+          "title": "故事标题",
+          "item_name": "需要找回的物品"
+        }
+      ]
+    },
+    "temperature": 0.9
+  },
+  "initial_setup": {
+    "tokens": 3200,
+    "instruction": "Create a consistent initial setup matching the confirmed public introduction. Use exactly roles A (human), B and C (AI), locations hall/study/courtyard, and one recoverable item. A begins in hall and wants to bring the item to hall. Choose actual starting custody from B,C,drawer; only its actual holder necessarily knows custody. Generate distinct personas, private goals, personal memories, and directional relationships. Do not give A the hidden custody or another role's private objective. Do not prescribe any per-beat action schedule. Private goals must be achievable using the supported choices, including disclosure, concealment, cooperation, movement, and private conversation. The item stays sealed unless a supported action says otherwise. The top-level JSON object must have exactly four sibling keys: rooms, item, custody, roles. roles contains exactly A, B, C and must be CLOSED before the next top-level key. All braces must balance. Each role relationships maps only other role IDs. Do not add unsupported places or item-opening goals; any past-place reference is a memory, not a playable location. Make the initial item holder capable of choosing cooperation or concealment using supported placement in the study drawer. Use natural in-world names in player-visible room/item/character labels and descriptions, and in A's persona, goals, memories and relationship descriptions. Internal IDs belong in structured control keys and values, not in the briefing.",
+    "example": {
+      "rooms": {
+        "hall": {
+          "name": "大厅",
+          "description": "公开场景"
+        },
+        "study": {
+          "name": "书房",
+          "description": "有书桌与抽屉"
+        },
+        "courtyard": {
+          "name": "庭院",
+          "description": "安静的庭院"
+        }
+      },
+      "item": {
+        "name": "与介绍相同的物品名",
+        "description": "公开外观"
+      },
+      "custody": "B",
+      "roles": {
+        "A": {
+          "name": "姓名",
+          "persona": "人设",
+          "goal": "带回物品",
+          "location": "hall",
+          "memories": [
+            "个人记忆"
+          ],
+          "relationships": {
+            "B": "初始关系",
+            "C": "初始关系"
+          }
+        },
+        "B": {
+          "name": "姓名",
+          "persona": "人设",
+          "goal": "私有目标",
+          "location": "hall",
+          "memories": [
+            "自己的经历"
+          ],
+          "relationships": {
+            "A": "初始关系",
+            "C": "初始关系"
+          }
+        },
+        "C": {
+          "name": "姓名",
+          "persona": "人设",
+          "goal": "私有目标",
+          "location": "courtyard",
+          "memories": [
+            "自己的经历"
+          ],
+          "relationships": {
+            "A": "初始关系",
+            "B": "初始关系"
+          }
+        }
+      }
+    }
+  },
+  "character": {
+    "tokens": 550,
+    "instruction": "Portray only the actor in your frozen baseline. Decide from that actor's memories, goals, relationships and actually acquired observations. Choose exactly one allowed_choices id. Other roles' hidden intentions are absent and cannot be used. Generate optional in-character speech and a private thought. If must_speak or must_respond is true, speech must be nonempty. Invitation acceptance is your decision, never presumed. A private channel's speech goes only to that conversation. Do not speak as the DM or narrate success. question_to is A,B,C or null. Action attempts are validated later and can fail. Do not expose your private thought in outward speech unless your character intentionally chooses disclosure. In spoken dialogue use the actual in-world character and location names, without internal IDs or parameter annotations. Keep the required choice and addressee IDs in their structured fields.",
+    "example": {
+      "choice": "wait",
+      "speech": "角色实际说的话",
+      "thought": "角色自己的私有打算",
+      "question_to": null
+    }
+  },
+  "action": {
+    "tokens": 320,
+    "instruction": "Interpret the human's explicit action attempt from only their authorized input and allowed_choices. Return one existing choice id, or ask for clarification. Do not execute a tentative thought, choose a new strategy, control another participant, or claim success. For a compound or unsupported request, clarify which supported first step to take rather than inventing capabilities. Use natural in-world names in clarification shown to the human. Keep the executable choice ID in its structured field.",
+    "example": {
+      "choice": "wait",
+      "needs_clarification": false,
+      "clarification": ""
+    }
+  },
+  "dm": {
+    "tokens": 750,
+    "instruction": "Adjudicate the supplied actual occurrences and utterances internally. Assess claims using actual records AND the speaker's acquired information: false but sincerely believed is mistaken, not known deception; missing evidence is uncertain. source_ids must reference provided actual event IDs. Only use supported cue codes pause,fingers,gaze, at most one per speaker. Cues become actual behavior; their internal reason/verdict is never delivered. Do not rewrite words, add a confession, expose hidden motives, create substantive actions, or turn the DM into a fictional speaker. Cues may reflect genuine stress as well as supported contradiction, so a cue is not proof of lying. Emit empty arrays when no claim or cue is warranted. Each assessment must contain speech_event_id from the supplied utterances, its actual speaker ID, verdict and source_ids. verdict must be exactly one of: supported (the claim is supported by the supplied facts), known_contradiction (the claim contradicts facts known to the speaker), mistaken (the claim is false but consistent with the speaker's belief), uncertain (the supplied evidence does not settle it). Use supported for a supported factual claim; do not output true, truthful, false or lying. A contradiction alone does not establish knowing deception. source_ids may contain only supplied actual event IDs. Each cue must contain speech_event_id from the supplied utterances, that utterance's speaker ID and one supported cue code. Return assessments and cues arrays, including empty arrays when appropriate.",
+    "example": {
+      "assessments": [
+        {
+          "speech_event_id": "e0001",
+          "speaker": "B",
+          "verdict": "uncertain",
+          "source_ids": []
+        }
+      ],
+      "cues": [
+        {
+          "speech_event_id": "e0001",
+          "speaker": "B",
+          "cue": "pause"
+        }
+      ]
+    }
+  },
+  "private_dm": {
+    "tokens": 750,
+    "instruction": "You are the dedicated DM for this one accepted private conversation, outside the fiction. Use its frozen participant baseline and subsequent private exchanges, plus only relevant adjudication facts. Follow the same claim and cue rules as the main DM: false belief is not deception, uncertainty stays uncertain, no verdict or hidden reason is shown. Do not forward outside events, the partner's private thoughts, or unrelated public history to participants. Preserve utterances exactly. Supported cue codes are pause,fingers,gaze; at most one per speaker. source_ids refer only to supplied event IDs. Each assessment must contain speech_event_id from the supplied utterances, its actual speaker ID, verdict and source_ids. verdict must be exactly one of: supported (the claim is supported by the supplied facts), known_contradiction (the claim contradicts facts known to the speaker), mistaken (the claim is false but consistent with the speaker's belief), uncertain (the supplied evidence does not settle it). Use supported for a supported factual claim; do not output true, truthful, false or lying. A contradiction alone does not establish knowing deception. source_ids may contain only supplied actual event IDs. Each cue must contain speech_event_id from the supplied utterances, that utterance's speaker ID and one supported cue code. Return assessments and cues arrays, including empty arrays when appropriate.",
+    "example": {
+      "assessments": [
+        {
+          "speech_event_id": "e0001",
+          "speaker": "B",
+          "verdict": "uncertain",
+          "source_ids": []
+        }
+      ],
+      "cues": [
+        {
+          "speech_event_id": "e0001",
+          "speaker": "B",
+          "cue": "pause"
+        }
+      ]
+    }
+  },
+  "memory": {
+    "tokens": 1200,
+    "instruction": "Update only this character's private interpretation from the supplied acquired observations and previous summary. Write a concise memory summary; do not assert unseen history as observed. A relationship change must cite one or more supplied observation IDs that this character received. trust_delta is between -0.2 and 0.2. Keep changes small and grounded; no change is needed without evidence. For A, summarize acquired events without deciding the human's future actions or private intentions. A source can be a heard false account, which remains an account rather than verified truth. Keep summary below 240 Chinese characters: consolidate key beliefs instead of repeating a full transcript. Cite at most 6 summary source IDs. relationships MUST be a JSON array, not a role-keyed object; use [] when nothing changes. Each relationship reason is at most 80 Chinese characters and cites at most 3 acquired observation IDs. Do not emit a zero-change relationship entry without evidence. In A's player-visible memory summary and relationship reasons, use natural Chinese and in-world names. Keep source and target IDs in structured fields.",
+    "example": {
+      "summary": "角色获得信息的简短记忆",
+      "sources": [
+        "A-o0001"
+      ],
+      "relationships": [
+        {
+          "target": "B",
+          "trust_delta": 0.0,
+          "reason": "根据实际经历解释",
+          "sources": [
+            "A-o0001"
+          ]
+        }
+      ]
+    }
+  },
+  "world_event": {
+    "tokens": 250,
+    "instruction": "Select one eligible world event id, including none, based on current conditions. Do not invent a new event, clue, culprit, backup, or past fact. Choose none when an event adds no meaningful opportunity. These are current supported changes, not a way to force a desired ending.",
+    "example": {
+      "choice": "none"
+    }
+  },
+  "ending": {
+    "tokens": 850,
+    "instruction": "Generate the human character's personal ending from the supplied actual outcome and their acquired observations. Keep the runtime outcome unchanged. source_ids must be supplied observation IDs. Describe what they achieved, missed, or remain uncertain about without exposing hidden motives, private conversations they missed, unseen custody changes, or a full omniscient truth. Do not invent a confession or new evidence. This is their grounded perspective, not a forced solution. Your output MUST contain exactly title, narrative, source_ids. source_ids is REQUIRED, even when empty; list only actual supplied observation IDs supporting the narrative. Never omit this field. Describe the supplied actual_outcome, not a different result. Use natural Chinese and in-world names in the player-visible title and narrative. Keep observation IDs only in source_ids.",
+    "example": {
+      "title": "结局标题",
+      "narrative": "依据这位角色实际经历形成的结局",
+      "source_ids": [
+        "A-o0001"
+      ]
+    }
+  },
+  "review": {
+    "tokens": 192,
+    "instruction": "Select at most four unique observation IDs from the supplied acquired records. Do not generate facts, action advice, or hidden explanations. The runtime displays the original records.",
+    "example": {
+      "observation_ids": [
+        "A-o0001"
+      ]
+    }
+  },
+  "case_introduction": {
+    "tokens": 1800,
+    "temperature": 0.9,
+    "instruction": "Create three independent public murder-mystery premises in Chinese. Different eras, social environments and central disputes across the three; no fixed fictional universe. Four living participants (one human, three AI) and one dead victim, three accessible locations. The human is a character with personal involvement and limited knowledge. Describe a compelling uncertain situation, not a retrieval mission. Do not reveal the killer, answer, hidden motive or future ending. No fixed act count, action limit or forced final meeting. Each introduction is 100-160 Chinese characters. The runtime randomly selects one; do not rank or review the alternatives. Use in-world names without implementation annotations. Each candidate must specify cast with four DISTINCT LIVING people A/B/C/D and a fifth separate dead victim. Provide these five names explicitly. The introduction must agree with this roster; the victim is never one of A/B/C/D.",
+    "example": {
+      "candidates": [
+        {
+          "title": "案件名称",
+          "introduction": "不泄底的公开情境",
+          "cast": {
+            "A": "活着的参与者1姓名",
+            "B": "活着的参与者2姓名",
+            "C": "活着的参与者3姓名",
+            "D": "活着的参与者4姓名"
+          },
+          "victim": "第五个人，死者姓名"
+        },
+        {
+          "title": "案件名称",
+          "introduction": "不泄底的公开情境",
+          "cast": {
+            "A": "活着的参与者1姓名",
+            "B": "活着的参与者2姓名",
+            "C": "活着的参与者3姓名",
+            "D": "活着的参与者4姓名"
+          },
+          "victim": "第五个人，死者姓名"
+        },
+        {
+          "title": "案件名称",
+          "introduction": "不泄底的公开情境",
+          "cast": {
+            "A": "活着的参与者1姓名",
+            "B": "活着的参与者2姓名",
+            "C": "活着的参与者3姓名",
+            "D": "活着的参与者4姓名"
+          },
+          "victim": "第五个人，死者姓名"
+        }
+      ]
+    }
+  },
+  "case_setup": {
+    "model": "deepseek-v4-pro",
+    "tokens": 6000,
+    "temperature": 0.35,
+    "instruction": "The supplied contract.cast and contract.victim are authoritative: keep these FIVE distinct people and their role mappings. The killer is contract.killer_name. Each record requirement names its actual subject; do not substitute a different person. Choose a physically ordinary direct killing with a handheld object or cord. Any staging involves ordinary objects or misleading records/statements, without medical chemistry, speculative technology or unavailable laboratory tests. Evidence must be something the characters can directly inspect.\nWrite a concise, internally consistent Chinese murder mystery matching public_premise and the supplied causal contract. The contract already fixes the killer, time bounds, roles A/B/C/D and required evidence relationships. Do not choose them again. The model authors the actual people, conflict, method, concealment and physical evidence; the runtime assigns record IDs, role memories and proof combinations. No future dialogue, acts or ending is predetermined.\nReturn exactly the example shape, with all NINE contract.records keys present. For each record, actual_history is a true past event, whereas observation is only the concrete content a player finds by inspecting target. Write the truth and its trace together. Every observation must substantiate its contract requirement, including objective time anchors, a positive presence trace, two complete alibis and a closed set of possible entrants. Cross-check those facts while composing them; do not invent contradictory later events. Keep the method simple enough to establish using the mechanism record. The presence trace does not show the actual killing; players must connect it with the time window, alibis and access evidence. Never confuse an object's owner with the person who used it. No perfect off-screen forensics, new witnesses, unverified alibis or missing comparison material. Prefer direct surviving records appropriate to the setting.\nAll nine targets are reachable in exactly three locations r1/r2/r3. A room can include a nearby connected area, but do not require visiting a fourth location. Set observation to 50-130 Chinese characters, actual_history to 30-80, profile fields to 20-80; reconstruction to 150-250. Player-visible titles/observations describe material rather than labeling a clue as forged or revealing who secretly planted it. The mechanism and any false appearance must agree with crime and reconstruction. The same weapon cannot be disposed of and still stored elsewhere. All alibis must cover the ENTIRE supplied window. Keep access assumptions physically credible.\nroles contains exactly A/B/C/D with distinct names, persona, goal, cover_story, and relationships to the other three role IDs. These profiles are private, limited to what that actor could know: only the killer knows the murder; innocents know their own unrelated secrets. No memories/knows fields: the runtime derives those from the authorized record assignments. The killer may have a false cover_story, but that false statement must not enter actual_history as truth. A has partial helpful experiences and a personal concern. Public briefing discloses the known death and investigation setting, not the answer. Use in-world names in all prose; control IDs appear only in JSON keys and location fields. The crime occurred at contract.crime_time, between the fixed alive/dead anchors. Name the killer in the internal crime/method/reconstruction fields. Do not write other timestamps for the crime.",
+    "example": {
+      "title": "案件名称",
+      "victim": "死者姓名",
+      "public_briefing": "共同知道的命案背景",
+      "crime": "固定时刻的实际作案经过，仅凶手知情",
+      "method": "真实的杀人方式与造成的误导",
+      "motive": "具体的社会冲突",
+      "reconstruction": "完整因果经过及无辜者的可疑行为",
+      "rooms": {
+        "r1": {
+          "name": "场所名称",
+          "description": "当前可见的环境"
+        },
+        "r2": {
+          "name": "场所名称",
+          "description": "当前可见的环境"
+        },
+        "r3": {
+          "name": "场所名称",
+          "description": "当前可见的环境"
+        }
+      },
+      "records": {
+        "alive": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "dead": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "presence": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "alibi_one": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "alibi_two": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "mechanism": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "motive": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "access": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        },
+        "innocent_secret": {
+          "actual_history": "这份痕迹对应的真实事件",
+          "time": "事件发生时间；两个时间锚由程序填写",
+          "location": "r1",
+          "title": "材料名称",
+          "target": "可检查的具体物件",
+          "observation": "玩家实际看到的材料内容，不代替玩家推理"
+        }
+      },
+      "roles": {
+        "A": {
+          "name": "姓名",
+          "persona": "身份与性格",
+          "goal": "私人诉求",
+          "cover_story": "愿意对外说的初始说法",
+          "relationships": {
+            "B": "双方已有关系",
+            "C": "双方已有关系",
+            "D": "双方已有关系"
+          }
+        },
+        "B": {
+          "name": "姓名",
+          "persona": "身份与性格",
+          "goal": "私人诉求",
+          "cover_story": "愿意对外说的初始说法",
+          "relationships": {
+            "A": "双方已有关系",
+            "C": "双方已有关系",
+            "D": "双方已有关系"
+          }
+        },
+        "C": {
+          "name": "姓名",
+          "persona": "身份与性格",
+          "goal": "私人诉求",
+          "cover_story": "愿意对外说的初始说法",
+          "relationships": {
+            "A": "双方已有关系",
+            "B": "双方已有关系",
+            "D": "双方已有关系"
+          }
+        },
+        "D": {
+          "name": "姓名",
+          "persona": "身份与性格",
+          "goal": "私人诉求",
+          "cover_story": "愿意对外说的初始说法",
+          "relationships": {
+            "A": "双方已有关系",
+            "B": "双方已有关系",
+            "C": "双方已有关系"
+          }
+        }
+      }
+    }
+  },
+  "case_character": {
+    "tokens": 1000,
+    "temperature": 0.65,
+    "instruction": "Portray only the supplied character using its frozen personal experiences and acquired evidence/observations. Respond to the actual latest question or presented record concretely. Preserve prior statements; if challenged you may explain, evade, admit a limited secret or revise a belief according to your goals. A killer may lie; an innocent may conceal an unrelated secret. Do not invent actual past events, new witnesses, new physical evidence or a convenient confession. Speculation and claims are dialogue, not changes to history. Choose ONE exact ID from choices; your chosen inspect/move/share/invite/accept/decline/end_private is executed, so use it deliberately. A pending invitation needs a meaningful consent/refusal choice. Do not output an action as completed merely because you mention it. Speech is natural Chinese with in-world names, without control IDs. The memory summary uses only this role's acquired experience and preserves important contradictions; memory_sources may reference supplied observation IDs, this role's initial experienced_fact IDs, or acquired evidence IDs; never another role's unknown history. trust_delta is -0.2 to 0.2 relative to the human; suspect is A/B/C/D or null and is a private belief, not an omniscient answer. evidence_ids are only evidence you actually acquired. question_to is one of the permitted recipients or null. A question addressed to you requires a spoken response. Keep speech concise (typically 40-120 Chinese characters) and memory under 250 characters. Do not print private thoughts, secrets you choose to conceal, or any DM verdict.",
+    "example": {
+      "choice": "wait",
+      "speech": "角色的具体回应",
+      "memory": "个人经历摘要",
+      "memory_sources": [],
+      "trust_delta": 0,
+      "suspect": null,
+      "evidence_ids": [],
+      "question_to": null
+    }
+  },
+  "case_dm": {
+    "tokens": 650,
+    "temperature": 0.3,
+    "instruction": "You are the external game DM for this one channel. Use fixed actual history and speaker knowledge to assess ONLY the supplied utterances. Return internal assessments with event_id and exactly one verdict: supported (facts support it), known_contradiction (contradicts facts the speaker knows), mistaken (false but consistent with their belief), uncertain (insufficient evidence). Opinions and suspicions are uncertain. Do not reveal judgments, force confession or alter speech. Optionally choose at most two observable cues from pause,gaze attached to actual supplied utterance event_ids. A cue does not prove lying; sincere stress can have the same cue. Use empty arrays if nothing warrants assessment or a cue. Do not invent extra events or instructions. Private conversation handling uses its own immutable participant baseline; outside utterances are absent.",
+    "example": {
+      "assessments": [
+        {
+          "event_id": "e0001",
+          "verdict": "uncertain"
+        }
+      ],
+      "cues": []
+    }
+  },
+  "case_memory": {
+    "tokens": 650,
+    "temperature": 0.3,
+    "instruction": "Summarize only this human character's acquired observations and optional private thoughts. Preserve the distinction between observed evidence, attributed statements and uncertain interpretations. Do not solve the case, invent evidence or send the thoughts to anyone else. Natural Chinese, under 250 Chinese characters.",
+    "example": {
+      "summary": "个人记忆摘要"
+    }
+  },
+  "case_action": {
+    "tokens": 350,
+    "temperature": 0.3,
+    "instruction": "Interpret the human's explicit attempted action using its authorized view. Return one exact supported choice ID, or null with a concise clarification. Thoughts, hypothetical plans and spoken claims are not performed actions. Never change strategy or invent a new effect. clarification is natural Chinese without internal identifiers.",
+    "example": {
+      "choice": null,
+      "clarification": "需要明确的行动目标"
+    }
+  },
+  "case_theory": {
+    "tokens": 1200,
+    "temperature": 0.3,
+    "instruction": "The player has explicitly submitted a FINAL accusation. Interpret only reasoning ACTUALLY present in explanation, compared with the fixed solution and the supplied cited_evidence. Return claims for identity, time and method only where the player genuinely explains that part. Every quote must be a nonempty EXACT substring of the player's explanation. supported is true only when that quoted argument correctly explains this aspect using the cited evidence; merely naming a suspect, listing documents or saying I know is insufficient. evidence_ids must be selected from cited_evidence and actually used by this argument. Do not add reasoning, facts or evidence on the player's behalf. Do not reward guessing a correct name without reasoning. An empty claims array is valid. Recognize equivalent phrasing and valid alternate reasoning. Code separately checks the culprit and sufficient evidence combinations; your output cannot override those checks.",
+    "example": {
+      "claims": [
+        {
+          "aspect": "time",
+          "quote": "玩家原文中的连续片段",
+          "supported": true,
+          "evidence_ids": [
+            "c1",
+            "c2"
+          ]
+        }
+      ]
+    }
+  },
+  "case_ending": {
+    "tokens": 1300,
+    "temperature": 0.3,
+    "instruction": "The investigation has ended by the player's explicit choice. Narrate the already adjudicated outcome in natural Chinese. established means supported reconstruction, unproven means correct suspect but insufficient submitted reasoning, incorrect means wrong suspect, unresolved means voluntary closure without accusation. Respect that result and the fixed solution/history. Explain how actual speech, disclosed evidence and recorded NPC beliefs/trust shaped the social outcome. Do not invent a confession, unanimous agreement or another ending. The final reveal is authorized now; explain misleading clues and innocent secrets from actual history, distinguish what the player discovered from the full case. Keep narrative around 250-450 Chinese characters, no implementation terminology or IDs.",
+    "example": {
+      "title": "结案标题",
+      "narrative": "有依据的结案复盘"
+    }
+  }
+}
